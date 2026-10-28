@@ -10,12 +10,12 @@ set(groot, 'DefaultAxesTickLabelInterpreter', 'Latex')
 set(0,'DefaultAxesFontSize',f_size)
 
 % setup & geometry 
-theta_list = [-1.1 0 1.6];  % twisting angles in degree (global)
-k_cutoff = 4;           % cutoff
+theta_list = [-2.2 0 2];  % twisting angles in degree (global)
+k_cutoff = 3;           % cutoff
 grid_search = 20;       % [G1,G2] are in [-grid_search,grid_search]^2 
 
 proj = [1, 2, 3];       % sheet to project eigenvector weights onto
-q_cut_type = 5;         % what kind of line-cut we do in momentum space
+q_cut_type = 1;         % what kind of line-cut we do in momentum space
                         % 1: high symmetry line in the L12 bilayer moire Brillouin zone (single valley)
                         % 2: connecting the Dirac points of 3 layers 
                         % 3: high symmetry line in the L23 bilayer moire Brillouin zone (single valley)
@@ -23,8 +23,8 @@ q_cut_type = 5;         % what kind of line-cut we do in momentum space
                         % 5: high symmetry line along K_L1 -> K_L2 -> Gamma_12 -> Gamma_23 -> K_L2 -> K_L3
 savedata = 1;           % save useful variables to folder ./data/
 E_field = 0.0;          % vertical displacement field in eV (total potential energy across the three layers)
-num_eigs = 100;          % the number of eigenvalues to keep in the diagonalization (near 0 energy)
-nq = 40;                % number of k points to sample on each high symmetry line segment 
+num_eigs = 20;          % the number of eigenvalues to keep in the diagonalization (near 0 energy)
+nq = 150;                % number of k points to sample on each high symmetry line segment 
 color_on = 1;           % plot colors in the band structure (wavefunction weights) 
 alpha = 1.43*sqrt(3);
 
@@ -330,6 +330,7 @@ xticklabels(xt_labels);
 xlim([min(qarr) max(qarr)])
 title(['$\theta_{12} = ' num2str(abs(theta_list(1))) '^\circ, \theta_{23} = ' ...
     num2str(abs(theta_list(3))) '^\circ$']);
+if ~exist('./figures', 'dir'), mkdir('./figures'); end
 exportgraphics(gcf, './figures/bands_tswg.pdf', 'ContentType','vector');
 
 %%

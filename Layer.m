@@ -12,13 +12,15 @@ classdef Layer
     end
     
     methods
-        function obj = Layer(index,theta)
+        function obj = Layer(index,theta,alpha)
             %Layer Construct an instance of this class
-            %   Detailed explanation goes here
+            %   alpha: lattice constant (defaults to 1.42*sqrt(3))
             obj.layer_index = index;
             obj.theta = theta;
-            
-            alpha = 1.42*sqrt(3);
+
+            if nargin < 3
+                alpha = 1.42*sqrt(3);
+            end
             
             obj.A_local = alpha*[   1       1/2
                                     0 sqrt(3)/2];
