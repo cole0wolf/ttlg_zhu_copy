@@ -24,8 +24,8 @@ q_cut_type = 1;         % what kind of line-cut we do in momentum space
 savedata = 1;           % save useful variables to folder ./data/
 E_field = 0.0;          % vertical displacement field in eV (total potential energy across the three layers)
 num_eigs = 20;          % the number of eigenvalues to keep in the diagonalization (near 0 energy)
-nq = 150;                % number of k points to sample on each high symmetry line segment 
-color_on = 1;           % plot colors in the band structure (wavefunction weights) 
+nq = 150;               % number of k points to sample on each high symmetry line segment 
+color_on = 0;           % plot colors in the band structure (wavefunction weights) 
 alpha = 1.43*sqrt(3);
 
 % create layer data structures
@@ -317,16 +317,15 @@ if color_on
     end
     
 else 
-    for d = 1:size(vals,2)
-       %  plot(qarr,(vals(:,d))*1e3, 'k', 'LineWidth', 2);
-        scatter(qarr,(vals(:,d))*1e3, 15, 'o', 'MarkerFaceColor', 'k', 'MarkerEdgeColor','none')
-    end 
-    
+    qGrid = repmat(qarr(:), 1, size(vals,2));
+    plot(qGrid(:), vals(:)*1e3, '.', 'MarkerSize', 4);
+
 end
 
 ylabel('Energy (meV)');
 xticks(xt);
 xticklabels(xt_labels);
+xline(xt, ':');
 xlim([min(qarr) max(qarr)])
 title(['$\theta_{12} = ' num2str(abs(theta_list(1))) '^\circ, \theta_{23} = ' ...
     num2str(abs(theta_list(3))) '^\circ$']);
@@ -334,11 +333,16 @@ if ~exist('./figures', 'dir'), mkdir('./figures'); end
 exportgraphics(gcf, './figures/bands_tswg.pdf', 'ContentType','vector');
 
 %%
-if savedata 
+if savedata
+    if ~exist('./data', 'dir'), mkdir('./data'); end
+    save_vars = {'theta_list','E_field', 'q_list', 'vals', 'qarr', 'xt', ...
+                'xt_labels', 'q_cut_type'};
+    if color_on % weights only computed when color_on
+        save_vars{end+1} = 'weights';
+    end
     save(['./data/q12_' num2str(abs(theta_list(1))) '_q23_' num2str(abs(theta_list(3)))...
                 '_kcut_' num2str(k_cutoff) '_qtype_' num2str(q_cut_type) '_bands.mat'], ...
-                'theta_list','E_field','weights', 'q_list', 'vals', 'qarr', 'xt', ...
-                'xt_labels', 'q_cut_type');
-end 
+                save_vars{:});
+end
 
 toc
